@@ -58,8 +58,8 @@ def neural_net():
             pd_2 = reset_weight(Y[index], act_1, weight_1[1], input_1[1])
             pd_3 = reset_weight(Y[index], act_1, weight_1[-1], input_1[-1])
             new_wts = [pd_1, pd_2, pd_3]
-            if pd_1 - weight_1[0] < 0.000001 and pd_2 - weight_1[1] < 0.000001 and pd_3 - weight_1[-1] < 0.000001 :
-                print(new_wts)
+            print(new_wts)
+
 
 
 if __name__ == "__main__":

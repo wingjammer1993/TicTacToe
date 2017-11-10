@@ -61,7 +61,6 @@ def neural_net():
             print(new_wts)
 
 
-
 if __name__ == "__main__":
     neural_net()
 

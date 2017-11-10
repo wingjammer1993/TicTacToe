@@ -16,7 +16,7 @@ class TicTacToe:
                 self.update_board(1, move_1, move_2)
                 self.winner = self.is_over()
                 if 0 == self.winner:
-                    move_1, move_2 = self.ask_input(2)
+                    move_1, move_2 = self.ask_input(-1)
                     self.update_board(2, move_1, move_2)
                     self.winner = self.is_over()
                 else:

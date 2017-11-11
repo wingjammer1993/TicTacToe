@@ -1,6 +1,7 @@
 import numpy
 from scipy.special import expit
 
+
 def neural_net():
 
     # x is XOR input and y is XOR target output
@@ -47,8 +48,7 @@ def neural_net():
 
             input_layer_weights = new_input_weights
             hidden_layer_weights = new_hidden_weights
-            iterations = iterations -1
-
+            iterations = iterations - 1
 
 
 if __name__ == "__main__":

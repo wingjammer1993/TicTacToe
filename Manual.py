@@ -1,5 +1,6 @@
 import numpy
 import random
+import pickle
 
 
 class TicTacToe:
@@ -175,6 +176,8 @@ if __name__ == "__main__":
     s = TicTacToe()
     for _ in range(1000):
         s.game()
+    with open('training.pickle', 'wb') as handle:
+        pickle.dump(s.values, handle, protocol=pickle.HIGHEST_PROTOCOL)
     print(s.win_count)
 
 

@@ -129,6 +129,9 @@ class TicTacToe:
     def update_state_value(self):
         last_state = self.get_rep_from_board()
         self.values[last_state] = self.reward
+        self.board_reset()
+        self.winner = 0
+        self.reward = 0
 
     def give_rep_from_state(self, state):
         board_config = self.get_board_config(state, 1)
@@ -150,6 +153,7 @@ if __name__ == "__main__":
     s = TicTacToe()
     for _ in range(10):
         s.game()
+
 
 
 

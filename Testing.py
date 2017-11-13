@@ -7,7 +7,7 @@ class TicTacToe:
 
     def __init__(self):
         self.board = numpy.zeros((3, 3))
-        with open('training.pickle', 'rb') as handle:
+        with open('training_3.pickle', 'rb') as handle:
             self.values = pickle.load(handle)
         print(self.board.shape)
         self.winner = 0

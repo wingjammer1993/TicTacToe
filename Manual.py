@@ -14,6 +14,7 @@ class TicTacToe:
         self.reward = 0
         self.draw = 0
         self.win_count = {0: 0, 1: 0, 2: 0}
+        self.state_sequence = []
 
     # asks for input from each player, updates the player, checks for a winner, if found, exits
     def game(self):
@@ -94,7 +95,7 @@ class TicTacToe:
         # print('please make your move, board state is shown')
         # print(self.board)
         if 2 == player_no:
-            row_num, col_num = self.get_ai_move(2)
+            row_num, col_num = self.pick_random_move()
             #row_num = input()
             #col_num = input()
         else:
@@ -108,26 +109,34 @@ class TicTacToe:
 
     # get the ai move
     def get_ai_move(self, player_num):
-        possible_afterstates = self.give_possible_afterstates()
-        after_state_values = {}
-        for state in possible_afterstates:
-            board_config = self.give_rep_from_state(state, player_num)
-            if board_config in self.values:
-                after_state_values[state, board_config] = self.values[board_config]
+        num = random.randrange(0, 10)
+        if num > 9:
+            possible_afterstates = self.give_possible_afterstates()
+            after_state_values = {}
+            for state in possible_afterstates:
+                board_config = self.give_rep_from_state(state, player_num)
+                if board_config in self.values:
+                    after_state_values[state, board_config] = self.values[board_config]
+                else:
+                    after_state_values[state, board_config] = random.random()
+
+            state_max, config_max = max(after_state_values, key=lambda key: after_state_values[key])
+            value_max = after_state_values[state_max, config_max]
+            current_state = self.get_rep_from_board()
+
+            if current_state in self.values:
+                old_val = self.values[current_state]
             else:
-                after_state_values[state, board_config] = random.random()
+                old_val = 0
 
-        state_max, config_max = max(after_state_values, key=lambda key: after_state_values[key])
-        value_max = after_state_values[state_max, config_max]
-        current_state = self.get_rep_from_board()
-
-        if current_state in self.values:
-            old_val = self.values[current_state]
+            self.state_sequence.append(config_max)
+            self.values[current_state] = old_val + self.discount*(value_max - old_val)
+            return state_max[0], state_max[-1]
         else:
-            old_val = 0
-
-        self.values[current_state] = old_val + self.discount*(value_max - old_val)
-        return state_max[0], state_max[-1]
+            random_move = self.pick_random_move()
+            board_config = self.give_rep_from_state(random_move, player_num)
+            self.state_sequence.append(board_config)
+            return random_move[0], random_move[-1]
 
     def get_board_config(self, after_state, player_num):
         temp_board = numpy.copy(self.board)
@@ -137,13 +146,21 @@ class TicTacToe:
         return numpy.ndarray.flatten(temp_board)
 
     def update_state_value(self):
-        last_state = self.get_rep_from_board()
-        self.values[last_state] = self.reward
+
+        previous = self.reward
+        for state in reversed(self.state_sequence):
+            if state in self.values:
+                self.values[state] = max(self.values[state], previous)
+                previous = previous*self.discount
+            else:
+                self.values[state] = previous
+                previous = previous*self.discount
         self.win_count[self.winner] = self.win_count[self.winner] + 1
         self.board_reset()
         self.winner = 0
         self.reward = 0
         self.draw = 0
+        self.state_sequence = []
         print(self.values)
 
     def give_rep_from_state(self, state, player_num):
@@ -174,9 +191,9 @@ class TicTacToe:
 
 if __name__ == "__main__":
     s = TicTacToe()
-    for _ in range(1000):
+    for _ in range(100000):
         s.game()
-    with open('training.pickle', 'wb') as handle:
+    with open('training_3.pickle', 'wb') as handle:
         pickle.dump(s.values, handle, protocol=pickle.HIGHEST_PROTOCOL)
     print(s.win_count)
 
